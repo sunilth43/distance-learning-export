@@ -51,6 +51,8 @@ try
 
     var segments = host.Services.GetRequiredService<IOptions<SegmentsOptions>>().Value;
 
+    TestRecordFilter.LookbackDays = ReadLookbackDays(logger);
+
     using var cts = new CancellationTokenSource();
     Console.CancelKeyPress += (_, e) =>
     {
@@ -116,6 +118,25 @@ static string WithTimestamp(string csvPath)
 
     var timestampedFileName = $"{fileName}_{timestamp}{extension}";
     return string.IsNullOrEmpty(directory) ? timestampedFileName : Path.Combine(directory, timestampedFileName);
+}
+
+/// <summary>Prompts for how many days back to look; digits only, blank defaults to 7.</summary>
+static int ReadLookbackDays(ILogger logger)
+{
+    Console.Write("Look back how many days? [7]: ");
+    var input = Console.ReadLine();
+
+    if (string.IsNullOrWhiteSpace(input))
+        return 7;
+
+    input = input.Trim();
+    if (!input.All(char.IsDigit) || !int.TryParse(input, out var days) || days <= 0)
+    {
+        logger.LogError("Invalid input '{Input}': expected a positive whole number of days.", input);
+        throw new InvalidOperationException($"Invalid days value: '{input}'. Expected a positive whole number.");
+    }
+
+    return days;
 }
 
 static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
