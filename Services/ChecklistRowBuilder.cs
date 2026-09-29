@@ -252,7 +252,7 @@ public sealed class ChecklistRowBuilder
 
     /// <summary>
     /// Builds the analytics filter selecting users with the given application who were updated
-    /// within the last 7 days (see <see cref="TestRecordFilter.RegisteredAtCutoff"/>) in any active term.
+    /// within the last <see cref="TestRecordFilter.LookbackDays"/> days (see <see cref="TestRecordFilter.RegisteredAtCutoff"/>) in any active term.
     /// </summary>
     private static object BuildFilter(string applicationGuid, IReadOnlyList<string> termGuids)
     {

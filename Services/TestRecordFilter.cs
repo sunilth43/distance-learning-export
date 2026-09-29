@@ -10,8 +10,11 @@ namespace distanceExport.Services;
 /// </summary>
 public static class TestRecordFilter
 {
-    /// <summary>Applications registered more than 7 days ago are excluded as stale test data.</summary>
-    public static DateTime RegisteredAtCutoff => DateTime.UtcNow.Date.AddDays(-7);
+    /// <summary>Number of days to look back; defaults to 7, set from user input at startup.</summary>
+    public static int LookbackDays { get; set; } = 7;
+
+    /// <summary>Applications registered more than <see cref="LookbackDays"/> days ago are excluded as stale test data.</summary>
+    public static DateTime RegisteredAtCutoff => DateTime.UtcNow.Date.AddDays(-LookbackDays);
 
     /// <summary>The export column carrying the registration timestamp; application-scoped.</summary>
     public static readonly ExportColumn RegisteredAtColumn =
